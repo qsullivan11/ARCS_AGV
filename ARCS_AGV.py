@@ -942,7 +942,7 @@ def executeRow():
 
       Code = 2
         
-      MoveXYZ(lCX,lCY,lCZ,CRx,CRy,CRz,newSpeed,lACCdur,lACCspd,lDECdur,lDECspd,WC,TCX,TCY,TCZ,TCRx,TCRy,TCRz,Track,Code)
+      MoveXYZ(lCXA,lCYA,lCZA,CRyA,CRzA,CRwA,CRvA,lCXB,lCYB,lCZB,CRxB,CRyB,CRzB,CRwB,CRvB,newSpeed,lACCdur,lACCspd,lDECdur,lDECspd,WC,TCXA,TCYA,TCZA,TCRxA,TCRyA,TCRzA,TCRwA,TCRvA,TCXB,TCYB,TCZB,TCRxB,TCRyB,TCRzB,TCRwB,TCRvB,Track,Code)
       ser.write(commandCalc.encode())  
       ser.flushInput()
       RobotCode = str(ser.readline())
@@ -960,12 +960,22 @@ def executeRow():
     if (subCmd == "Move A Mid" or subCmd == "Move A End"):
       almStatusLab.config(text="Move A must start with a Beg followed by Mid & End", bg = "red")
       almStatusLab2.config(text="Move A must start with a Beg followed by Mid & End", bg = "red")
-    J1newIndex = command.find("X) ")
-    J2newIndex = command.find("Y) ")
-    J3newIndex = command.find("Z) ")
-    J4newIndex = command.find("W) ")
-    J5newIndex = command.find("P) ")
-    J6newIndex = command.find("R) ")
+    J1AnewIndex = command.find("X) ")
+    J2AnewIndex = command.find("Y) ")
+    J3AnewIndex = command.find("Z) ")
+    J4AnewIndex = command.find("W) ")
+    J5AnewIndex = command.find("P) ")
+    J6AnewIndex = command.find("R) ")
+    FLnewIndex = command.find("O) ")
+    RLnewIndex = command.find("N) ")    
+    J1BnewIndex = command.find("M) ")
+    J2BnewIndex = command.find("L) ")
+    J3BnewIndex = command.find("K) ")
+    J4BnewIndex = command.find("J) ")
+    J5BnewIndex = command.find("I) ")
+    J6BnewIndex = command.find("H) ")
+    FRnewIndex = command.find("G) ")
+    RRnewIndex = command.find("F) ")
     TRnewIndex = command.find("T) ")	
     SpeedIndex = command.find("Speed-")
     ACCdurIndex = command.find("Ad")
@@ -973,25 +983,45 @@ def executeRow():
     DECdurIndex = command.find("Dd")
     DECspdIndex = command.find("Ds")
     WristConfIndex = command.find("$")
-    CXbeg = float(command[J1newIndex+3:J2newIndex-1])
-    CYbeg = float(command[J2newIndex+3:J3newIndex-1])
-    CZbeg = float(command[J3newIndex+3:J4newIndex-1])
-    CRx = float(command[J4newIndex+3:J5newIndex-1])
-    CRy = float(command[J5newIndex+3:J6newIndex-1])
-    CRz = float(command[J6newIndex+3:TRnewIndex-1])
+    CXAbeg = float(command[J1AnewIndex+3:J2AnewIndex-1])
+    CYAbeg = float(command[J2AnewIndex+3:J3AnewIndex-1])
+    CZAbeg = float(command[J3AnewIndex+3:J4AnewIndex-1])
+    CRxA = float(command[J4AnewIndex+3:J5AnewIndex-1])
+    CRyA = float(command[J5AnewIndex+3:J6AnewIndex-1])
+    CRzA = float(command[J6AnewIndex+3:FLnewIndex-1])
+    CRwA = float(command[FLnewIndex+3:RLnewIndex-1])
+    CRvA = float(command[RLnewIndex+3:J1BnewIndex-1])
+    CXBbeg = float(command[J1BnewIndex+3:J2BnewIndex-1])
+    CYBbeg = float(command[J2BnewIndex+3:J3BnewIndex-1])
+    CZBbeg = float(command[JBAnewIndex+3:J4BnewIndex-1])
+    CRxB = float(command[J4BnewIndex+3:J5BnewIndex-1])
+    CRyB = float(command[J5BnewIndex+3:J6BnewIndex-1])
+    CRzB = float(command[J6BnewIndex+3:FRnewIndex-1])
+    CRwB = float(command[FRnewIndex+3:RRnewIndex-1])
+    CRvB = float(command[RRnewIndex+3:TRnewIndex-1]) 
     Track = float(command[TRnewIndex+3:SpeedIndex-1])
     newSpeed = str(command[SpeedIndex+6:ACCdurIndex-1])
-    ACCdur = command[ACCdurIndex+3:ACCspdIndex-1]
+    ACCdur = command[ACCdurIndex+3:ACCspdIndex-1] #need an A and B acc and dec?
     ACCspd = command[ACCspdIndex+3:DECdurIndex-1]
     DECdur = command[DECdurIndex+3:DECspdIndex-1]
     DECspd = command[DECspdIndex+3:WristConfIndex-1]
     WC = command[WristConfIndex+1:]
-    TCX = 0
-    TCY = 0 
-    TCZ = 0
-    TCRx = 0
-    TCRy = 0
-    TCRz = 0
+    TCXA = 0
+    TCYA = 0 
+    TCZA = 0
+    TCRxA = 0
+    TCRyA = 0
+    TCRzA = 0
+    TCRwA = 0
+    TCRvA = 0
+    TCXB = 0
+    TCYB = 0 
+    TCZB = 0
+    TCRxB = 0
+    TCRyB = 0
+    TCRzB = 0
+    TCRwB = 0
+    TCRvB = 0
     ##read next row for Mid position	
     curRow = tab1.progView.curselection()[0]
     selRow = tab1.progView.curselection()[0]
@@ -1009,6 +1039,12 @@ def executeRow():
     tab1.progView.see(selRow+2)
     data = list(map(int, tab1.progView.curselection()))
     command=tab1.progView.get(data[0])
+    J1AnewIndex = command.find("X) ")
+    J2AnewIndex = command.find("Y) ")
+    J3AnewIndex = command.find("Z) ")
+    CXAmid = float(command[J1AnewIndex+3:J2AnewIndex-1])
+    CYAmid = float(command[J2AnewIndex+3:J3AnewIndex-1])
+    CZAmid = float(command[J3AnewIndex+3:J4AnewIndex-1])	
     J1newIndex = command.find("X) ")
     J2newIndex = command.find("Y) ")
     J3newIndex = command.find("Z) ")
